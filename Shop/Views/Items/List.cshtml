@@ -1,0 +1,10 @@
+﻿
+@{
+    foreach (var item in Model.AllItems)
+    {
+        <div>
+            <h2>Модель: @item.name</h2>
+            <p>Цена: @item.price.ToString("c")</p>
+        </div>
+    }
+}

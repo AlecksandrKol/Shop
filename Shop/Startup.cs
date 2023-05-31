@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Shop.Data;
 using Shop.Data.Interfaces;
 using Shop.Data.mocks;
+using Shop.Data.Models;
 using Shop.Data.Reporsitory;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace Shop
 
         private IConfigurationRoot _conf_string;
 
-        public Startup(IWebHostEnvironment hostEnv)
+        public Startup(IHostEnvironment hostEnv)
         {
             _conf_string = new ConfigurationBuilder().SetBasePath(hostEnv.ContentRootPath).AddJsonFile("db_settings.json").Build();
         }
@@ -39,7 +40,11 @@ namespace Shop
             services.AddDbContext<AppDBContent>(options => options.UseSqlServer(_conf_string.GetConnectionString("DefaultConnection")));
             services.AddTransient<IAllItems, ItemRepository>();
             services.AddTransient<IItemsCategory, CategoryRepository>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped(sp => ShopCart.GetCart(sp));
             services.AddMvc();
+            services.AddMemoryCache();
+            services.AddSession();
             services.AddMvc(option => option.EnableEndpointRouting = false);
         }
 
@@ -49,7 +54,13 @@ namespace Shop
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
-            app.UseMvcWithDefaultRoute();
+            app.UseSession();
+            //app.UseMvcWithDefaultRoute();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute(name: "categoryFilter", template: "Item/{action}/{category?}", defaults: new { Controller = "Item", action = "List" });
+            });
             app.UseRouting();
 
             

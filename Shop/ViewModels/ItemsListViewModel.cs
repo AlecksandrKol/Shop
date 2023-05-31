@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Shop.ViewModels
 {
-    public class ItemsListViewModels
+    public class ItemsListViewModel
     {
         public IEnumerable<Item> AllItems { get; set; }
 

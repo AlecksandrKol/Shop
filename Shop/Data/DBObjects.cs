@@ -12,13 +12,13 @@ namespace Shop.Data
         public static void Initial(AppDBContent content)
         {
            
-
             if (!content.Category.Any())
                 content.Category.AddRange(Categories.Select(c => c.Value));
 
             if (!content.Item.Any())
             {
-                content.AddRange(
+                content.AddRange
+                (
                     new Item
                     {
                         name = "Ананас",
@@ -29,8 +29,19 @@ namespace Shop.Data
                         isFavourite = true,
                         available = true,
                         Category = Categories["Сухофрукты"]
+                    },
+                    new Item
+                    {
+                        name = "Кешью",
+                        shortDesc = "",
+                        longDesc = "",
+                        img = "",
+                        price = 200,
+                        isFavourite = true,
+                        available = true,
+                        Category = Categories["Орехи"]
                     }
-                    );
+                );
             }
 
             content.SaveChanges();
